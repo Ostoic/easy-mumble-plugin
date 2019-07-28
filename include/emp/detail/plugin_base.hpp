@@ -42,8 +42,8 @@ namespace emp::detail
 	}
 }
 
-extern "C" EMP_PLUGIN_EXPORT emp::detail::plugin_data* getempPlugin();
-extern "C" EMP_PLUGIN_EXPORT emp::detail::plugin_data2* getempPlugin2();
+extern "C" EMP_PLUGIN_EXPORT emp::detail::plugin_data* getMumblePlugin();
+extern "C" EMP_PLUGIN_EXPORT emp::detail::plugin_data2* getMumblePlugin2();
 
 //implementation:
 namespace emp::detail
@@ -81,13 +81,13 @@ namespace emp::detail
 }
 
 extern "C" EMP_PLUGIN_EXPORT
-	inline emp::detail::plugin_data* getempPlugin()
+	inline emp::detail::plugin_data* getMumblePlugin()
 {
 	return emp::detail::singleton_data();
 }
 
 extern "C" EMP_PLUGIN_EXPORT
-	inline emp::detail::plugin_data2* getempPlugin2()
+	inline emp::detail::plugin_data2* getMumblePlugin2()
 {
 	return emp::detail::singleton_data2();
 }
