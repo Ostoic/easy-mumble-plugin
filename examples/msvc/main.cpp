@@ -51,19 +51,19 @@ int main()
 	try
 	{
 		auto& plugin = test_plugin::create(L"Test Plugin");
-		getempPlugin()->about(nullptr);
+		getMumblePlugin()->about(nullptr);
 		std::cout << '\n';
 
-		getempPlugin()->config(nullptr);
+		getMumblePlugin()->config(nullptr);
 		std::cout << '\n';
 
-		getempPlugin()->unlock();
+		getMumblePlugin()->unlock();
 		std::cout << '\n';
 
-		getempPlugin()->trylock();
+		getMumblePlugin()->trylock();
 		std::cout << '\n';
 
-		getempPlugin2()->trylock({});
+		getMumblePlugin2()->trylock({});
 	}
 	catch (...)
 	{
