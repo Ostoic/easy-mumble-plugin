@@ -3,6 +3,13 @@
 
 #include "../../include/emp/plugin.hpp"
 
+/**
+ * This example shows that one can create a plugin using any kind of callable member.
+ * emp::plugin uses CRTP to inspect the class' members to perform compile-time type
+ * checks on the defined plugin.
+ * Todo: MumblePlugin concept?
+ */
+
 void unlock_external()
 {
 	std::cout << "unlock external\n";
