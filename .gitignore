@@ -1,0 +1,14 @@
+*.opendb
+*.db
+*.ipch
+.vs/*
+*.sqlite
+*.exe
+*.exp
+*.ilk
+*.lib
+*.log
+*.pdb
+*.tlog
+examples/msvc/.vs/msvc/v16/.suo
+examples/msvc/.vs/example/v16/.suo
