@@ -134,14 +134,15 @@ namespace emp
 		//else
 		//	static_assert(false, "[emp::plugin] Your plugin must provide a matching fetch member function");
 
-		//if constexpr (trylock_exists)
-		//{
-		//	static_assert(
-		//		member_functions::trylock::valid_in<Plugin>::value,
-		//		"[emp::plugin] Your plugin's trylock member function has the wrong return type"
-		//	);
-		//}
-		//else
-		//	static_assert(false, "[emp::plugin] Your plugin must provide a matching trylock member function");
+		if constexpr (trylock_exists)
+		{
+			static_assert(
+				plugin_traits<Plugin>::template valid<member_functions::trylock>,
+				//member_functions::trylock::valid_in<Plugin>::value,
+				"[emp::plugin] Your plugin's trylock member function has the wrong return type"
+			);
+		}
+		else
+			static_assert(false, "[emp::plugin] Your plugin must provide a matching trylock member function");
 	}
 }

@@ -36,7 +36,7 @@ public:
 		std::cout << "test_plugin::config!\n";
 	}
 
-//static member variable pointer to function pointer:
+//static member variable function pointer:
 	inline static auto trylock = trylock_external;
 
 //member variable function pointer:
@@ -57,6 +57,8 @@ int main()
 {
 	try
 	{
+		// emp::plugin allows you to use any generic callable object with the exported
+		// Mumble plugin data. Normally 
 		auto& plugin = test_plugin::create(L"Test Plugin");
 		getMumblePlugin()->about(nullptr);
 		std::cout << '\n';
