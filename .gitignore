@@ -13,3 +13,5 @@ examples/msvc/.vs/*
 examples/msvc/Debug/*
 examples/msvc/Release/*
 examples/msvc/Debug/main.obj
+examples/msvc/Debug/main.obj
+*.obj

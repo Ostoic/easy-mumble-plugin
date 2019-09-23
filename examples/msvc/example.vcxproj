@@ -102,6 +102,22 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\emp\avatar.hpp" />
+    <ClInclude Include="..\..\include\emp\camera.hpp" />
+    <ClInclude Include="..\..\include\emp\detail\magic.hpp" />
+    <ClInclude Include="..\..\include\emp\detail\member_functions.hpp" />
+    <ClInclude Include="..\..\include\emp\detail\plugin_base.hpp" />
+    <ClInclude Include="..\..\include\emp\detail\plugin_data.hpp" />
+    <ClInclude Include="..\..\include\emp\detail\plugin_traits.hpp" />
+    <ClInclude Include="..\..\include\emp\detail\type_traits.hpp" />
+    <ClInclude Include="..\..\include\emp\detail\adapt_plugin_function.hpp" />
+    <ClInclude Include="..\..\include\emp\geometry\detail\proxy_scalar.hpp" />
+    <ClInclude Include="..\..\include\emp\geometry\math.hpp" />
+    <ClInclude Include="..\..\include\emp\geometry\transformable.hpp" />
+    <ClInclude Include="..\..\include\emp\geometry\vector.hpp" />
+    <ClInclude Include="..\..\include\emp\plugin.hpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

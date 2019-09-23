@@ -6,6 +6,9 @@
 #include <string>
 #include <map>
 
+#include "../avatar.hpp"
+#include "../camera.hpp"
+
 #ifndef NDEBUG
 #	include <typeinfo>
 #endif
@@ -31,7 +34,7 @@ namespace emp::detail::member_functions
 		template <class Plugin>
 		struct internal
 		{
-			static void wrapper(void* arg)
+			static void adaptor(void* arg)
 			{
 				auto& plugin = Plugin::get();
 #ifndef NDEBUG
@@ -58,7 +61,7 @@ namespace emp::detail::member_functions
 		template <class Plugin>
 		struct internal
 		{
-			static void wrapper(void* arg)
+			static void adaptor(void* arg)
 			{
 				auto& plugin = Plugin::get();
 #ifndef NDEBUG
@@ -85,7 +88,7 @@ namespace emp::detail::member_functions
 		template <class Plugin>
 		struct internal
 		{
-			static int wrapper()
+			static int adaptor()
 			{
 				auto& plugin = Plugin::get();
 #ifndef NDEBUG
@@ -116,7 +119,7 @@ namespace emp::detail::member_functions
 		template <class Plugin>
 		struct internal
 		{
-			static int wrapper(const std::multimap<std::wstring, unsigned long long int>& arg)
+			static int adaptor(const std::multimap<std::wstring, unsigned long long int>& arg)
 			{
 				auto& plugin = Plugin::get();
 #ifndef NDEBUG
@@ -143,7 +146,7 @@ namespace emp::detail::member_functions
 		template <class Plugin>
 		struct internal
 		{
-			static void wrapper()
+			static void adaptor()
 			{
 				auto& plugin = Plugin::get();
 #ifndef NDEBUG
@@ -170,7 +173,7 @@ namespace emp::detail::member_functions
 		template <class Plugin>
 		struct internal
 		{
-			static std::wstring wrapper()
+			static std::wstring adaptor()
 			{
 #ifndef NDEBUG
 				EMP_DETAIL_DEBUG_MEMBER_TYPE(longdesc);
@@ -190,8 +193,8 @@ namespace emp::detail::member_functions
 			std::declval<float*>(),
 			std::declval<float*>(),
 			std::declval<float*>(),
-			std::declval<std::string>(),
-			std::declval<std::wstring>()
+			std::declval<std::string&>(),
+			std::declval<std::wstring&>()
 		));
 
 		using signature = int(
@@ -201,8 +204,8 @@ namespace emp::detail::member_functions
 			float*,
 			float*,
 			float*,
-			std::string,
-			std::wstring
+			std::string&,
+			std::wstring&
 		);
 
 		template <class T>
@@ -214,21 +217,113 @@ namespace emp::detail::member_functions
 		template <class Plugin>
 		struct internal
 		{
-			static int wrapper(
-				float* arg1,
-				float* arg2,
-				float* arg3,
-				float* arg4,
-				float* arg5,
-				float* arg6,
-				std::string arg7,
-				std::wstring arg8
-			)
+			static int adaptor(
+				float* avatar_pos,
+				float* avatar_front,
+				float* avatar_top,
+				float* camera_pos,
+				float* camera_front,
+				float* camera_top,
+				std::string& context,
+				std::wstring& identity)
 			{
 #ifndef NDEBUG
 				EMP_DETAIL_DEBUG_MEMBER_TYPE(fetch);
 #endif
-				return Plugin::get().about(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+				return Plugin::get().fetch(avatar_pos, avatar_front, avatar_top, camera_pos, camera_front, camera_top, context, identity);
+			}
+		};
+	};
+
+	struct fetch_ac
+	{
+		template <class T>
+		using detector = decltype(std::declval<T>().fetch(
+			std::declval<emp::avatar&>(),
+			std::declval<emp::camera&>(),
+			std::declval<std::string&>(),
+			std::declval<std::wstring&>()
+		));
+
+		using signature = bool(
+			emp::avatar&,
+			emp::camera&,
+			std::string&,
+			std::wstring&
+		);
+
+		template <class T>
+		using exists_in = is_detected<detector, T>;
+
+		template <class T>
+		using valid_in = std::is_convertible<detector<T>, int>;
+
+		template <class Plugin>
+		struct internal
+		{
+			static int adaptor(
+				float* avatar_pos,
+				float* avatar_front,
+				float* avatar_top,
+				float* camera_pos,
+				float* camera_front,
+				float* camera_top,
+				std::string& context,
+				std::wstring& identity)
+			{
+#ifndef NDEBUG
+				EMP_DETAIL_DEBUG_MEMBER_TYPE(fetch);
+#endif
+				auto avatar = emp::avatar{avatar_pos, avatar_front, avatar_top};
+				auto camera = emp::camera{camera_pos, camera_front, camera_top};
+				return Plugin::get().fetch(avatar, camera, context, identity);
+			}
+		};
+	};
+
+	struct fetch_a
+	{
+		template <class T>
+		using detector = decltype(std::declval<T>().fetch(
+			std::declval<emp::avatar&>(),
+			std::declval<std::string&>(),
+			std::declval<std::wstring&>()
+		));
+
+		using signature = bool(
+			emp::avatar& avatar,
+			std::string&,
+			std::wstring&
+		);
+
+		template <class T>
+		using exists_in = is_detected<detector, T>;
+
+		template <class T>
+		using valid_in = std::is_convertible<detector<T>, int>;
+
+		template <class Plugin>
+		struct internal
+		{
+			static int adaptor(
+				float* avatar_pos,
+				float* avatar_front,
+				float* avatar_top,
+				float* camera_pos,
+				float* camera_front,
+				float* camera_top,
+				std::string& context,
+				std::wstring& identity)
+			{
+#ifndef NDEBUG
+				EMP_DETAIL_DEBUG_MEMBER_TYPE(fetch);
+#endif
+				auto avatar = emp::avatar{avatar_pos, avatar_front, avatar_top};
+				auto camera = emp::camera{camera_pos, camera_front, camera_top};
+
+				const auto result = Plugin::get().fetch(avatar, context, identity);
+				camera = avatar;
+				return result;
 			}
 		};
 	};

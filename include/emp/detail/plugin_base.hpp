@@ -29,17 +29,9 @@ namespace emp::detail
 		plugin_data2 data2_;
 	};
 
-	plugin_data*& singleton_data()
-	{
-		static plugin_data* data = nullptr;
-		return data;
-	}
+	plugin_data*& singleton_data();
+	plugin_data2*& singleton_data2();
 
-	plugin_data2*& singleton_data2()
-	{
-		static plugin_data2* data2 = nullptr;
-		return data2;
-	}
 }
 
 extern "C" EMP_PLUGIN_EXPORT emp::detail::plugin_data* getMumblePlugin();
@@ -77,6 +69,18 @@ namespace emp::detail
 	{
 		static plugin_base singleton;
 		return singleton;
+	}
+
+	inline plugin_data*& singleton_data()
+	{
+		static plugin_data* data = nullptr;
+		return data;
+	}
+
+	inline plugin_data2*& singleton_data2()
+	{
+		static plugin_data2* data2 = nullptr;
+		return data2;
 	}
 }
 

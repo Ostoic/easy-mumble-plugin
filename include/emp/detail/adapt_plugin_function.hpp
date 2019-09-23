@@ -8,7 +8,7 @@ namespace emp::detail
 	void see_this_member_function() = delete;
 
 	template <class Plugin, class Member, class empFn>
-	void adapt_plugin_function(empFn& fn_ptr)
+	bool adapt_plugin_function(empFn& fn_ptr)
 	{
 		if constexpr (plugin_traits<Plugin>::template has<Member>)
 		{
@@ -19,9 +19,10 @@ namespace emp::detail
 			}
 
 			fn_ptr = plugin_traits<Plugin>::template internal<Member>::adaptor;
+			return true;
 		}
 
-		else
-			fn_ptr = nullptr;
+		fn_ptr = nullptr;
+		return false;
 	}
 }

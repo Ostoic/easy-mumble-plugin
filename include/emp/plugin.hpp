@@ -3,22 +3,27 @@
 #include "detail/member_functions.hpp"
 #include "detail/plugin_traits.hpp"
 #include "detail/plugin_base.hpp"
-#include "detail/wrap_plugin_function.hpp"
+#include "detail/adapt_plugin_function.hpp"
 
 namespace emp
 {
 	template <class Plugin>
-	class plugin : public detail::plugin_base
+	class plugin : private detail::plugin_base
 	{
 	public:
+		using detail::plugin_base::magic;
+		using detail::plugin_base::magic2;
+
 		static Plugin& get() noexcept;
 
 		static Plugin& create(const std::wstring& name, const std::wstring& description = L"");
 
 	public:
-		[[nodiscard]] const std::wstring& name() const noexcept;
+		[[nodiscard]]
+		const std::wstring& name() const noexcept;
 
-		[[nodiscard]] const std::wstring& description() const noexcept;
+		[[nodiscard]]
+		const std::wstring& description() const noexcept;
 
 		void name(const std::wstring& name);
 		void description(const std::wstring& name);
@@ -32,13 +37,15 @@ namespace emp
 
 //implementation:
 	template <class Plugin>
-	[[nodiscard]] const std::wstring& plugin<Plugin>::name() const noexcept
+	[[nodiscard]]
+	const std::wstring& plugin<Plugin>::name() const noexcept
 	{
 		return name_;
 	}
 
 	template <class Plugin>
-	[[nodiscard]] const std::wstring& plugin<Plugin>::description() const noexcept
+	[[nodiscard]]
+	const std::wstring& plugin<Plugin>::description() const noexcept
 	{
 		return description_;
 	}
@@ -69,34 +76,38 @@ namespace emp
 		plugin::check_plugin_support();
 		auto& p = static_cast<plugin&>(plugin::get());
 
-		// Connect non-template data so getempPlugin can access it
+		// Connect non-template data so getMumblePlugin can access it
 		detail::singleton_data() = &p.data_;
 		detail::singleton_data2() = &p.data2_;
 
-		// Generate	appropriate member function wrappers
-		detail::wrap_plugin_function<Plugin, detail::member_functions::about>(
+		// Generate	appropriate member function adaptpers
+		detail::adapt_plugin_function<Plugin, detail::member_functions::about>(
 			p.data_.about
 		);
 
-		detail::wrap_plugin_function<Plugin, detail::member_functions::config>(
+		detail::adapt_plugin_function<Plugin, detail::member_functions::config>(
 			p.data_.config
 		);
 
-		detail::wrap_plugin_function<Plugin, detail::member_functions::trylock>(
+		detail::adapt_plugin_function<Plugin, detail::member_functions::trylock>(
 			p.data_.trylock
 		);
 
-		detail::wrap_plugin_function<Plugin, detail::member_functions::trylock2>(
+		detail::adapt_plugin_function<Plugin, detail::member_functions::trylock2>(
 			p.data2_.trylock
 		);
 
-		detail::wrap_plugin_function<Plugin, detail::member_functions::unlock>(
+		detail::adapt_plugin_function<Plugin, detail::member_functions::unlock>(
 			p.data_.unlock
 		);
 
-		detail::wrap_plugin_function<Plugin, detail::member_functions::fetch>(
-			p.data_.fetch
-		);
+		if (!detail::adapt_plugin_function<Plugin, detail::member_functions::fetch>(p.data_.fetch) &&
+			!detail::adapt_plugin_function<Plugin, detail::member_functions::fetch_a>(p.data_.fetch))
+		{
+			detail::adapt_plugin_function<Plugin, detail::member_functions::fetch_ac>(
+				p.data_.fetch
+			);
+		}
 
 		// Set plugin name and description
 		p.name_ = name;
@@ -121,24 +132,46 @@ namespace emp
 			"[emp::plugin] Your plugin must be default constructible"
 		);
 
-		constexpr auto fetch_exists = member_functions::fetch::exists_in<Plugin>::value;
-		constexpr auto trylock_exists = member_functions::trylock::exists_in<Plugin>::value;
+		constexpr auto fetch_exists =
+			plugin_traits<Plugin>::template has<member_functions::fetch>;
 
-		//if constexpr (fetch_exists)
-		//{
-		//	static_assert(
-		//		member_functions::fetch::valid_in<Plugin>::value,
-		//		"[emp::plugin] Your plugin's fetch member function has the wrong return type"
-		//	);
-		//}
-		//else
-		//	static_assert(false, "[emp::plugin] Your plugin must provide a matching fetch member function");
+		constexpr auto fetch_a_exists =
+			plugin_traits<Plugin>::template has<member_functions::fetch_a>;
+
+		constexpr auto fetch_ac_exists =
+			plugin_traits<Plugin>::template has<member_functions::fetch_ac>;
+
+		constexpr auto trylock_exists =
+			plugin_traits<Plugin>::template has<member_functions::trylock>;
+
+		if constexpr (fetch_exists)
+		{
+			static_assert(
+				plugin_traits<Plugin>::template valid<member_functions::fetch>,
+				"[emp::plugin] Your plugin's fetch member function has the wrong return type"
+			);
+		}
+		else if constexpr (fetch_a_exists)
+		{
+			static_assert(
+				plugin_traits<Plugin>::template valid<member_functions::fetch_a>,
+				"[emp::plugin] Your plugin's fetch member function has the wrong return type"
+			);
+		}
+		else if constexpr (fetch_ac_exists)
+		{
+			static_assert(
+				plugin_traits<Plugin>::template valid<member_functions::fetch_ac>,
+				"[emp::plugin] Your plugin's fetch member function has the wrong return type"
+			);
+		}
+		else
+			static_assert(false, "[emp::plugin] Your plugin must provide a matching fetch member function");
 
 		if constexpr (trylock_exists)
 		{
 			static_assert(
 				plugin_traits<Plugin>::template valid<member_functions::trylock>,
-				//member_functions::trylock::valid_in<Plugin>::value,
 				"[emp::plugin] Your plugin's trylock member function has the wrong return type"
 			);
 		}

@@ -23,7 +23,7 @@ namespace emp::detail
 		fn_ptr<int()> trylock;
 		fn_ptr<void()> unlock;
 		fn_ptr<std::wstring()> longdesc;
-		fn_ptr<int(float*, float*, float*, float*, float*, float*, std::string, std::wstring)> fetch;
+		fn_ptr<int(float*, float*, float*, float*, float*, float*, std::string&, std::wstring&)> fetch;
 	};
 
 	struct plugin_data2
