@@ -1,6 +1,6 @@
 #pragma once
 #include "CppUnitTest.h"
-#include "../../include/emp.hpp"
+#include "..\include\emp.hpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

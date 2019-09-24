@@ -19,10 +19,7 @@ namespace emp
 		static Plugin& create(const std::wstring& name, const std::wstring& description = L"");
 
 	public:
-		[[nodiscard]]
 		const std::wstring& name() const noexcept;
-
-		[[nodiscard]]
 		const std::wstring& description() const noexcept;
 
 		void name(const std::wstring& name);
@@ -37,14 +34,12 @@ namespace emp
 
 //implementation:
 	template <class Plugin>
-	[[nodiscard]]
 	const std::wstring& plugin<Plugin>::name() const noexcept
 	{
 		return name_;
 	}
 
 	template <class Plugin>
-	[[nodiscard]]
 	const std::wstring& plugin<Plugin>::description() const noexcept
 	{
 		return description_;
