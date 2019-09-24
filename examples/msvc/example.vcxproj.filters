@@ -22,9 +22,6 @@
     <Filter Include="Header Files\emp\geometry">
       <UniqueIdentifier>{045652e9-4e36-4008-beb9-86e3973bfe73}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\emp\geometry\detail">
-      <UniqueIdentifier>{a8910508-dd80-416a-8c6e-21ab74d9895e}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -64,12 +61,6 @@
     </ClInclude>
     <ClInclude Include="..\..\include\emp\geometry\vector.hpp">
       <Filter>Header Files\emp\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\emp\geometry\math.hpp">
-      <Filter>Header Files\emp\geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\include\emp\geometry\detail\proxy_scalar.hpp">
-      <Filter>Header Files\emp\geometry\detail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\emp\geometry\transformable.hpp">
       <Filter>Header Files\emp\geometry</Filter>

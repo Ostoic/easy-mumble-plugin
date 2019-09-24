@@ -15,3 +15,6 @@ examples/msvc/Release/*
 examples/msvc/Debug/main.obj
 examples/msvc/Debug/main.obj
 *.obj
+*.idb
+*.pch
+*.obj

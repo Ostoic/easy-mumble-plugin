@@ -19,19 +19,9 @@ namespace emp::geometry
 			, top_{top}
 		{}
 
-		transformable& operator=(const transformable& other)
-		{
-			auto copy_array3 = [](const auto& lhs, auto& rhs)
-			{
-				for (int i = 0; i < 3; i++)
-					rhs[i] = lhs[i];
-			};
+		transformable& operator=(const transformable& other);
 
-			copy_array3(other.position_, this->position_);
-			copy_array3(other.front_, this->front_);
-			copy_array3(other.top_, this->top_);
-			return *this;
-		}
+		bool empty() const noexcept;
 
 		void height(float height) noexcept;
 		float height() const noexcept;
@@ -45,15 +35,50 @@ namespace emp::geometry
 		void position(const geometry::vector& position) noexcept;
 		geometry::vector position() const noexcept;
 
+		friend bool operator==(const transformable& lhs, const transformable& rhs);
+
 	private:
 		float* position_;
 		float* front_;
 		float* top_;
 	};
+
+	bool operator!=(const transformable& lhs, const transformable& rhs);
 }
 
 namespace emp::geometry
 {
+	bool operator==(const transformable& lhs, const transformable& rhs)
+	{
+		return std::equal(lhs.position_, &(lhs.position_[2]), rhs.position_) &&
+			std::equal(lhs.front_, &(lhs.front_[2]), rhs.front_) &&
+			std::equal(lhs.top_, &(lhs.top_[2]), rhs.top_);
+	}
+
+	bool operator!=(const transformable& lhs, const transformable& rhs)
+	{
+		return !operator==(lhs, rhs);
+	}
+
+	transformable& transformable::operator=(const transformable& other)
+	{
+		auto copy_array3 = [](const auto& lhs, auto& rhs)
+		{
+			for (int i = 0; i < 3; i++)
+				rhs[i] = lhs[i];
+		};
+
+		copy_array3(other.position_, this->position_);
+		copy_array3(other.front_, this->front_);
+		copy_array3(other.top_, this->top_);
+		return *this;
+	}
+
+	bool transformable::empty() const noexcept
+	{
+		return position_ == nullptr || front_ == nullptr || top_ == nullptr;
+	}
+
 	void transformable::height(const float height) noexcept
 	{
 		const auto pos = this->position();

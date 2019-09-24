@@ -112,8 +112,6 @@
     <ClInclude Include="..\..\include\emp\detail\plugin_traits.hpp" />
     <ClInclude Include="..\..\include\emp\detail\type_traits.hpp" />
     <ClInclude Include="..\..\include\emp\detail\adapt_plugin_function.hpp" />
-    <ClInclude Include="..\..\include\emp\geometry\detail\proxy_scalar.hpp" />
-    <ClInclude Include="..\..\include\emp\geometry\math.hpp" />
     <ClInclude Include="..\..\include\emp\geometry\transformable.hpp" />
     <ClInclude Include="..\..\include\emp\geometry\vector.hpp" />
     <ClInclude Include="..\..\include\emp\plugin.hpp" />

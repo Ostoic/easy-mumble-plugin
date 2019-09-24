@@ -11,6 +11,7 @@
 
 #ifndef NDEBUG
 #	include <typeinfo>
+#	include <iostream>
 #endif
 
 #define EMP_DETAIL_DEBUG_MEMBER_TYPE(member) std::cout << "typeid(" #member "): " << typeid(&Plugin::member).name() << '\n';

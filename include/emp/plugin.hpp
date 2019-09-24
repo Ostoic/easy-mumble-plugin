@@ -74,44 +74,55 @@ namespace emp
 	Plugin& plugin<Plugin>::create(const std::wstring& name, const std::wstring& description)
 	{
 		plugin::check_plugin_support();
-		auto& p = static_cast<plugin&>(plugin::get());
+		static bool initialized = false;
 
-		// Connect non-template data so getMumblePlugin can access it
-		detail::singleton_data() = &p.data_;
-		detail::singleton_data2() = &p.data2_;
-
-		// Generate	appropriate member function adaptpers
-		detail::adapt_plugin_function<Plugin, detail::member_functions::about>(
-			p.data_.about
-		);
-
-		detail::adapt_plugin_function<Plugin, detail::member_functions::config>(
-			p.data_.config
-		);
-
-		detail::adapt_plugin_function<Plugin, detail::member_functions::trylock>(
-			p.data_.trylock
-		);
-
-		detail::adapt_plugin_function<Plugin, detail::member_functions::trylock2>(
-			p.data2_.trylock
-		);
-
-		detail::adapt_plugin_function<Plugin, detail::member_functions::unlock>(
-			p.data_.unlock
-		);
-
-		if (!detail::adapt_plugin_function<Plugin, detail::member_functions::fetch>(p.data_.fetch) &&
-			!detail::adapt_plugin_function<Plugin, detail::member_functions::fetch_a>(p.data_.fetch))
+		if (!initialized)
 		{
-			detail::adapt_plugin_function<Plugin, detail::member_functions::fetch_ac>(
-				p.data_.fetch
-			);
-		}
+			auto& p = static_cast<plugin&>(plugin::get());
 
-		// Set plugin name and description
-		p.name_ = name;
-		p.description_ = description;
+			// Connect non-template data so getMumblePlugin can access it
+			detail::singleton_data() = &p.data_;
+			detail::singleton_data2() = &p.data2_;
+
+			// Generate	appropriate member function adaptors
+			detail::adapt_plugin_function<Plugin, detail::member_functions::longdesc>(
+				p.data_.longdesc
+			);
+
+			// Generate	appropriate member function adaptpers
+			detail::adapt_plugin_function<Plugin, detail::member_functions::about>(
+				p.data_.about
+			);
+
+			detail::adapt_plugin_function<Plugin, detail::member_functions::config>(
+				p.data_.config
+			);
+
+			detail::adapt_plugin_function<Plugin, detail::member_functions::trylock>(
+				p.data_.trylock
+			);
+
+			detail::adapt_plugin_function<Plugin, detail::member_functions::trylock2>(
+				p.data2_.trylock
+			);
+
+			detail::adapt_plugin_function<Plugin, detail::member_functions::unlock>(
+				p.data_.unlock
+			);
+
+			if (!detail::adapt_plugin_function<Plugin, detail::member_functions::fetch>(p.data_.fetch) &&
+				!detail::adapt_plugin_function<Plugin, detail::member_functions::fetch_a>(p.data_.fetch))
+			{
+				detail::adapt_plugin_function<Plugin, detail::member_functions::fetch_ac>(
+					p.data_.fetch
+				);
+			}
+
+			// Set plugin name and description
+			p.name_ = name;
+			p.description_ = description;
+			initialized = true;
+		}
 
 		// Return a reference to the plugin singleton
 		return plugin::get();
@@ -144,6 +155,9 @@ namespace emp
 		constexpr auto trylock_exists =
 			plugin_traits<Plugin>::template has<member_functions::trylock>;
 
+		constexpr auto trylock2_exists =
+			plugin_traits<Plugin>::template has<member_functions::trylock2>;
+
 		if constexpr (fetch_exists)
 		{
 			static_assert(
@@ -172,6 +186,13 @@ namespace emp
 		{
 			static_assert(
 				plugin_traits<Plugin>::template valid<member_functions::trylock>,
+				"[emp::plugin] Your plugin's trylock member function has the wrong return type"
+			);
+		}
+		else if constexpr (trylock2_exists)
+		{
+			static_assert(
+				plugin_traits<Plugin>::template valid<member_functions::trylock2>,
 				"[emp::plugin] Your plugin's trylock member function has the wrong return type"
 			);
 		}

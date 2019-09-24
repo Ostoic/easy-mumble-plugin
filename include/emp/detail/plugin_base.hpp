@@ -31,7 +31,6 @@ namespace emp::detail
 
 	plugin_data*& singleton_data();
 	plugin_data2*& singleton_data2();
-
 }
 
 extern "C" EMP_PLUGIN_EXPORT emp::detail::plugin_data* getMumblePlugin();
