@@ -10,6 +10,12 @@ namespace emp::geometry
 	public:
 		constexpr vector(const float x = 0, const float y = 0, const float z = 0) noexcept;
 
+		template <std::size_t N>
+		constexpr vector(const std::array<float, N>& array) noexcept;
+
+		template <std::size_t N>
+		operator std::array<float, N>() noexcept;
+
 		constexpr float x() const noexcept;
 		constexpr float& x() noexcept;
 
@@ -34,6 +40,12 @@ namespace emp::geometry
 	constexpr vector operator+(const vector& lhs, const vector& rhs) noexcept;
 	constexpr vector operator-(const vector& lhs, const vector& rhs) noexcept;
 
+	template <class Scalar, class = std::enable_if_t<std::is_arithmetic_v<Scalar>>>
+	constexpr vector operator*(const Scalar scalar, const vector& rhs) noexcept;
+
+	template <class Scalar, class = std::enable_if_t<std::is_scalar_v<Scalar>>>
+	constexpr vector operator*(const vector& lhs, const Scalar scalar) noexcept;
+
 	constexpr float magnitude_squared(const vector & vector) noexcept;
 
 	float magnitude(const vector& vector) noexcept;
@@ -52,6 +64,18 @@ namespace emp::geometry
 	constexpr vector::vector(const float x, const float y, const float z) noexcept
 		: vector::base{x, y, z}
 	{}
+
+	template <std::size_t N>
+	constexpr vector::vector(const std::array<float, N>& array) noexcept
+		: vector::base{array[0], array[1], array[2]}
+	{}
+
+	template <std::size_t N>
+	vector::operator std::array<float, N>() noexcept
+	{
+		static_assert(N >= 3);
+		return std::array{x(), y(), z()};
+	}
 
 	constexpr float vector::x() const noexcept
 	{
@@ -108,6 +132,18 @@ namespace emp::geometry
 	{
 		(*this) = vector{} - *this;
 		return *this;
+	}
+
+	template <class Scalar, class>
+	constexpr vector operator*(const Scalar scalar, const vector& rhs) noexcept
+	{
+		return {scalar * rhs.x(), scalar * rhs.y(), scalar * rhs.z()};
+	}
+
+	template <class Scalar, class>
+	constexpr vector operator*(const vector& lhs, const Scalar scalar) noexcept
+	{
+		return {scalar * lhs.x(), scalar * lhs.y(), scalar * lhs.z()};
 	}
 
 	constexpr vector operator+(const vector& lhs, const vector& rhs) noexcept

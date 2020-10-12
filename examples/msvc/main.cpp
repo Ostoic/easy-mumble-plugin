@@ -2,22 +2,31 @@
 #include <functional>
 #include <array>
 
+#include <distant/wow/entities/object_manager.hpp>
+
 #include "../../include/emp/plugin.hpp"
 
 class test_plugin : public emp::plugin<test_plugin>
 {
 public:
-	bool fetch(emp::avatar& avatar, std::string& context, std::wstring& identity)
+	static int lock()
 	{
-		avatar.position({10, 0, 0});
+
+	}
+
+	static bool fetch(emp::avatar& avatar, std::string& context, std::wstring& identity)
+	{
+		auto& me = distant::wow::local_player();
+
+		avatar.position(me.position());
 		return false;
 	}
 
-	int trylock()
-	{
-		std::cout << "hey\n";
-		return 1;
-	}
+	//int trylock()
+	//{
+	//	std::cout << "hey\n";
+	//	return 1;
+	//}
 private:
 };
 

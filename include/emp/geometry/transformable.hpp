@@ -35,6 +35,9 @@ namespace emp::geometry
 		void position(const geometry::vector& position) noexcept;
 		geometry::vector position() const noexcept;
 
+		float bounding_radius() const noexcept;
+		void bounding_radius(float radius) noexcept;
+
 		friend bool operator==(const transformable& lhs, const transformable& rhs);
 
 	private:
@@ -125,4 +128,15 @@ namespace emp::geometry
 	{
 		return {position_[0], position_[1], position_[2]};
 	}
+
+	float transformable::bounding_radius() const noexcept
+	{
+		return geometry::magnitude(this->front() - this->position());
+	}
+
+	void transformable::bounding_radius(const float new_radius) noexcept
+	{
+		this->front((new_radius * new_radius / front().magnitude_squared()) * front());
+	}
+
 }
